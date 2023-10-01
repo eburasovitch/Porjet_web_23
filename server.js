@@ -2,6 +2,8 @@ const express = require("express");
 const bodyParser = require("body-parser");
 const cors = require("cors");
 const app = express();
+
+
 global.__basedir = __dirname;
 var corsOptions = {origin: "*"};
 app.use(cors(corsOptions));

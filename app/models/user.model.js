@@ -5,28 +5,30 @@ const bcrypt = require("bcryptjs");
 const expireTme = "2h";
 const fs = require("fs");
 
-const User = function(user) {
-    this.fullname = user.fullname;
-    this.email = user.email;
-    this.username = user.username;
-    this.password = user.password;
-    this.img = user.img;
-};
-User.checkUsername = (username, result) => {
-    sql.query("SELECT * FROM users WHERE username = '"+username+"'", (err, res) => {
-        if (err) {
-            console.log("error: ", err);
-            result(err, null);
+const User = {
+    create: function (user) {
+        this.fullname = user.fullname;
+        this.email = user.email;
+        this.username = user.username;
+        this.password = user.password;
+        this.img = user.img;
+      },
+      checkUsername: function (username, callback) {
+        sql.query("SELECT * FROM users WHERE username=?", username, (err, res) => {
+          if (err) {
+            console.log("Error: " + err);
+            callback(err, null);
             return;
-        }
-        if (res.length) {
-            console.log("found username: ", res[0]);
-            result(null, true);
+          }
+          if (res.length) {
+            console.log("Found username: " + JSON.stringify(res[0]));
+            callback(null, res[0]);
             return;
-        }
-        result({kind: "not_found"}, false);
-    });
-};
+          }
+          callback({ kind: "not_found" }, null);
+        });
+      },
+    };
 
 User.create = (newUser, result)=>{
     sql.query("INSERT INTO users SET ?", newUser , (err, res)=>{
